@@ -18,8 +18,8 @@ THREE.FPSControls = function(object, domElement)
     this.object = object;
     this.target = new THREE.Vector3(0, 0, 0);
 
-    this.movementSpeed = 1.0;
-    this.lookSpeed = 0.005;
+    this.movementSpeed = 100;
+    this.lookSpeed = 100;
 
     this.lookUp = false;
     this.lookLeft = false;
