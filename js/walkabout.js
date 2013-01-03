@@ -26,7 +26,7 @@ if(!Detector.webgl) {
 
 var container, stats;
 
-var camera, controls, scene, renderer;
+var camera, controls, scene, renderer, gravity;
 
 var mesh, texture;
 
@@ -67,6 +67,8 @@ function init() {
 
     mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
     scene.add( mesh );
+
+    gravity = new THREE.Gravity(camera, mesh);
 
     renderer = new THREE.WebGLRenderer();
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -196,7 +198,9 @@ function animate() {
 }
 
 function render() {
-    controls.update(clock.getDelta());
+    var delta = clock.getDelta();
+    controls.update(delta);
+    gravity.update(delta);
     renderer.render(scene, camera);
 }
 
