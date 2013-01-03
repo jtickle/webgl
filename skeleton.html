@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Jeff Tickle - WebGL - PROJECTNAME</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="info">
+      <p>PROJECTNAME Copyright &copy; 2013 Jeff Tickle.  This program comes with <a href="http://www.gnu.org/licenses/gpl.html#section15">ABSOLUTELY NO WARRANTY</a>.  This is free software, and you are welcome to redistribute it under certain <a href="http://www.gnu.org/licenses/gpl.html#section4">conditions</a>.
+    </div>
+    <script src="js/three.min.js"></script>
+    <script src="js/Detector.js"></script>
+    <script type="text/javascript">
+        /*
+         * PROJECTNAME - A WebGL implementation of walking around on a terrain using standard FPS controls.
+         * Copyright (C) 2013 Jeff Tickle
+         *
+         * This program is free software: you can redistribute it and/or modify
+         * it under the terms of the GNU General Public License as published by
+         * the Free Software Foundation, either version 3 of the License, or
+         * (at your option) any later version.
+         *
+         * This program is distributed in the hope that it will be useful,
+         * but WITHOUT ANY WARRANTY; without even the implied warranty of
+         * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+         * GNU General Public License for more details.
+         *
+         * You should have received a copy of the GNU General Public License
+         * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+         */
+        if(!Detector.webgl) {
+            Detector.addGetWebGLMessage();
+            document.getElementById('container').innerHTML = "";
+        }
+
+        var container, stats;
+
+        var camera, controls, scene, renderer;
+
+        var mesh, texture;
+
+        var clock = new THREE.Clock();
+
+        init();
+        animate();
+
+        function init() {
+            container = document.getElementById('container');
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 20000);
+            scene = new THREE.Scene();
+
+            // TODO: Set up everything else
+
+            window.addEventListener('resize', onWindowResize, false);
+            }
+
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+
+                // TODO: Anything else need to know about resizing?
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+            stats.update();
+        }
+
+        function render() {
+            // TODO: Anything else need to do anything onRender?
+
+            renderer.render(scene, camera);
+        }
+
+    </script>
+  </body>
+</html>
