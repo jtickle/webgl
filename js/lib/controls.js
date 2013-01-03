@@ -35,6 +35,10 @@ THREE.FPSControls = function(object, domElement)
     this.phi = 0;
     this.theta = 0;
 
+    this.Xaxis = new THREE.Vector3(1, 0, 0);
+    this.Yaxis = new THREE.Vector3(0, 1, 0);
+    this.Zaxis = new THREE.Vector3(0, 0, 1);
+
     this.domElement = (domElement !== undefined) ? domElement : document;
 
     this.handleResize = function() {
@@ -101,11 +105,6 @@ THREE.FPSControls = function(object, domElement)
 
         actualMoveSpeed = delta * this.movementSpeed;
 
-        if(this.moveForward)  this.object.translateZ( -actualMoveSpeed);
-        if(this.moveBackward) this.object.translateZ(  actualMoveSpeed);
-        if(this.moveLeft)     this.object.translateX( -actualMoveSpeed);
-        if(this.moveRight)    this.object.translateX(  actualMoveSpeed);
-
         var actualLookSpeed = delta * this.lookSpeed;
 
         if(this.lookUp)    this.lat += actualLookSpeed;
@@ -125,6 +124,32 @@ THREE.FPSControls = function(object, domElement)
         targetPosition.z = position.z + 100 * Math.sin(this.phi) * Math.sin(this.theta);
 
         this.object.lookAt(targetPosition);
+
+        if(!this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)
+            return;
+
+        var moveTheta;
+        if( this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)
+            moveTheta = 0;
+        if( this.moveForward && !this.moveBackward && !this.moveLeft &&  this.moveRight)
+            moveTheta = 45;
+        if(!this.moveForward && !this.moveBackward && !this.moveLeft &&  this.moveRight)
+            moveTheta = 90;
+        if(!this.moveForward &&  this.moveBackward && !this.moveLeft &&  this.moveRight)
+            moveTheta = 135;
+        if(!this.moveForward &&  this.moveBackward && !this.moveLeft && !this.moveRight)
+            moveTheta = 180;
+        if(!this.moveForward &&  this.moveBackward &&  this.moveLeft && !this.moveRight)
+            moveTheta = 225;
+        if(!this.moveForward && !this.moveBackward &&  this.moveLeft && !this.moveRight)
+            moveTheta = 270;
+        if( this.moveForward && !this.moveBackward &&  this.moveLeft && !this.moveRight)
+            moveTheta = 315;
+
+        moveTheta = THREE.Math.degToRad((moveTheta + this.lon) % 360);
+
+        this.object.position.x += actualMoveSpeed * Math.cos(moveTheta);
+        this.object.position.z += actualMoveSpeed * Math.sin(moveTheta);
     }
 
     this.domElement.addEventListener('keydown', bind(this, this.onKeyDown), false);
