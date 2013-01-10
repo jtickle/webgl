@@ -29,6 +29,9 @@ THREE.FPSControls = function(object, domElement)
     this.moveLeft = false;
     this.moveBackward = false;
     this.moveRight = false;
+    // TEMPORARY:
+    this.moveUp = false;
+    this.moveDown = false;
 
     this.lat = 0;
     this.lon = 0;
@@ -69,6 +72,11 @@ THREE.FPSControls = function(object, domElement)
                 this.moveBackward = true; prevent(event); break;
             case 68: // D
                 this.moveRight = true; prevent(event); break;
+            // TEMPORARY:
+            case 32: // space
+                this.moveUp = true; prevent(event); break;
+            case 17: // ctrl
+                this.moveDown = true; prevent(event); break;
         }
     };
 
@@ -95,6 +103,11 @@ THREE.FPSControls = function(object, domElement)
                 this.moveBackward = false; prevent(event); break;
             case 68: // D
                 this.moveRight = false; prevent(event); break;
+            // TEMPORARY:
+            case 32: // space
+                this.moveUp = false; prevent(event); break;
+            case 17: // ctrl
+                this.moveDown = false; prevent(event); break;
         }
 
     };
@@ -125,26 +138,43 @@ THREE.FPSControls = function(object, domElement)
 
         this.object.lookAt(targetPosition);
 
-        if(!this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)
-            return;
+        // TEMPORARY:
+        if(this.moveUp)
+            this.object.position.y += actualMoveSpeed;
+        if(this.moveDown)
+            this.object.position.y -= actualMoveSpeed;
 
         var moveTheta;
+        if(!this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)
+            return;
+        else
         if( this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)
             moveTheta = 0;
+        else
         if( this.moveForward && !this.moveBackward && !this.moveLeft &&  this.moveRight)
             moveTheta = 45;
+        else
         if(!this.moveForward && !this.moveBackward && !this.moveLeft &&  this.moveRight)
             moveTheta = 90;
+        else
         if(!this.moveForward &&  this.moveBackward && !this.moveLeft &&  this.moveRight)
             moveTheta = 135;
+        else
         if(!this.moveForward &&  this.moveBackward && !this.moveLeft && !this.moveRight)
             moveTheta = 180;
+        else
         if(!this.moveForward &&  this.moveBackward &&  this.moveLeft && !this.moveRight)
             moveTheta = 225;
+        else
         if(!this.moveForward && !this.moveBackward &&  this.moveLeft && !this.moveRight)
             moveTheta = 270;
+        else
         if( this.moveForward && !this.moveBackward &&  this.moveLeft && !this.moveRight)
             moveTheta = 315;
+        else{
+            console.log('Illegal motion');
+            return;
+        }
 
         moveTheta = THREE.Math.degToRad((moveTheta + this.lon) % 360);
 

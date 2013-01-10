@@ -8,7 +8,7 @@ THREE.Gravity = function(object, ground)
 {
     this.object = object;
     this.ground = ground;
-    this.force = 0;
+    this.force = 100;
     this.v = 0;
 
     this.vector = new THREE.Vector3(0, -1, 0);

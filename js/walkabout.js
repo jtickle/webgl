@@ -30,10 +30,12 @@ var camera, controls, scene, renderer, gravity;
 
 var mesh, texture;
 
-var worldWidth = 256, worldDepth = 256;
+var worldWidth = 64, worldDepth = 64;
 var worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
 
 var clock = new THREE.Clock();
+
+var raycaster;
 
 init();
 animate();
@@ -43,6 +45,8 @@ function init() {
 
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
 
+    raycaster = new THREE.Raycaster(camera.position, new THREE.Vector3(0, -1, 0));
+
     scene = new THREE.Scene();
 
     controls = new THREE.FPSControls(camera);
@@ -51,7 +55,7 @@ function init() {
 
     data = generateHeight( worldWidth, worldDepth );
 
-    camera.position.y = data[ worldHalfWidth + worldHalfDepth * worldWidth ] + 500;
+    camera.position.y = data[ worldHalfWidth + worldHalfDepth * worldWidth ] + 2000
 
     var geometry = new THREE.PlaneGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
     geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
@@ -201,6 +205,17 @@ function render() {
     var delta = clock.getDelta();
     controls.update(delta);
     gravity.update(delta);
+    updateCollisionRay();
     renderer.render(scene, camera);
+}
+
+function updateCollisionRay() {
+    raycaster.ray.origin.copy(camera.position);
+
+    var intersects = raycaster.intersectObject(mesh);
+    if(intersects[0].distance < 128) {
+        gravity.v = 0;
+        camera.position.y += (128 - intersects[0].distance);
+    }
 }
 
