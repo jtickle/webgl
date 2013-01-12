@@ -1,0 +1,3 @@
+RewriteEngine on
+RewriteBase /webgl/server
+RewriteRule .* index.php

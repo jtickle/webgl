@@ -13,13 +13,14 @@
  * TODO: Jumping
  */
 
-THREE.FPSControls = function(object, domElement)
+THREE.FPSControls = function(object, gravity)
 {
     this.object = object;
     this.target = new THREE.Vector3(0, 0, 0);
+    this.gravity = gravity;
 
-    this.movementSpeed = 100;
-    this.lookSpeed = 100;
+    this.movementSpeed = 3 * 128;
+    this.lookSpeed = 128;
 
     this.lookUp = false;
     this.lookLeft = false;
@@ -29,9 +30,9 @@ THREE.FPSControls = function(object, domElement)
     this.moveLeft = false;
     this.moveBackward = false;
     this.moveRight = false;
-    // TEMPORARY:
     this.moveUp = false;
     this.moveDown = false;
+    this.run = false;
 
     this.lat = 0;
     this.lon = 0;
@@ -42,7 +43,7 @@ THREE.FPSControls = function(object, domElement)
     this.Yaxis = new THREE.Vector3(0, 1, 0);
     this.Zaxis = new THREE.Vector3(0, 0, 1);
 
-    this.domElement = (domElement !== undefined) ? domElement : document;
+    this.domElement = document;
 
     this.handleResize = function() {
         if(this.domElement === document) {
@@ -72,11 +73,17 @@ THREE.FPSControls = function(object, domElement)
                 this.moveBackward = true; prevent(event); break;
             case 68: // D
                 this.moveRight = true; prevent(event); break;
-            // TEMPORARY:
-            case 32: // space
+            case 69: // E
                 this.moveUp = true; prevent(event); break;
-            case 17: // ctrl
+            case 70: // F
                 this.moveDown = true; prevent(event); break;
+            case 16: // Shift
+                this.run = true; prevent(event); break;
+            case 32: // Space
+                if(this.gravity.v >= 0) {
+                    this.gravity.v = (-5 * 128);
+                }
+                prevent(event); break;
         }
     };
 
@@ -103,11 +110,12 @@ THREE.FPSControls = function(object, domElement)
                 this.moveBackward = false; prevent(event); break;
             case 68: // D
                 this.moveRight = false; prevent(event); break;
-            // TEMPORARY:
-            case 32: // space
+            case 69: // E
                 this.moveUp = false; prevent(event); break;
-            case 17: // ctrl
+            case 70: // F
                 this.moveDown = false; prevent(event); break;
+            case 16: // Shift
+                this.run = false; prevent(event); break;
         }
 
     };
@@ -117,8 +125,9 @@ THREE.FPSControls = function(object, domElement)
         var actualLookSpeed = 0;
 
         actualMoveSpeed = delta * this.movementSpeed;
+        if(this.run) actualMoveSpeed *= 2;
 
-        var actualLookSpeed = delta * this.lookSpeed;
+        actualLookSpeed = delta * this.lookSpeed;
 
         if(this.lookUp)    this.lat += actualLookSpeed;
         if(this.lookDown)  this.lat -= actualLookSpeed;
@@ -139,10 +148,14 @@ THREE.FPSControls = function(object, domElement)
         this.object.lookAt(targetPosition);
 
         // TEMPORARY:
-        if(this.moveUp)
+        if(this.moveUp) {
+            gravity.v = 0;
             this.object.position.y += actualMoveSpeed;
-        if(this.moveDown)
+        }
+        if(this.moveDown) {
+            gravity.v = 0;
             this.object.position.y -= actualMoveSpeed;
+        }
 
         var moveTheta;
         if(!this.moveForward && !this.moveBackward && !this.moveLeft && !this.moveRight)

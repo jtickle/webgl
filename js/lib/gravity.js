@@ -4,11 +4,10 @@
  * This applies gravity to a given object.
  */
 
-THREE.Gravity = function(object, ground)
+THREE.Gravity = function(object)
 {
     this.object = object;
-    this.ground = ground;
-    this.force = 100;
+    this.force = 9.81 * 128;
     this.v = 0;
 
     this.vector = new THREE.Vector3(0, -1, 0);
